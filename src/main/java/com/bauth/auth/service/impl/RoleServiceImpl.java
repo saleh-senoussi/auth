@@ -19,9 +19,9 @@ public class RoleServiceImpl implements RoleService {
 
     public void createRole(UserRole roleName, String username) {
         Optional<List<Role>> roles = Optional.ofNullable(roleRepository.findByRoleName(roleName));
-        if(roles.isEmpty()) {
+        if (roles.isEmpty()) {
             Role role = new Role();
-            role.setRoleName(roleName);
+            role.setRoleName(roleName.name());
             roleRepository.save(role);
         } else {
             throw new IllegalArgumentException("Role already exists.");
@@ -30,7 +30,7 @@ public class RoleServiceImpl implements RoleService {
 
     public void deleteRole(UserRole roleName, String username) {
         Optional<List<Role>> roles = Optional.ofNullable(roleRepository.findByRoleName(roleName));
-        if(roles.isPresent() && roles.get().size() == 1) {
+        if (roles.isPresent() && roles.get().size() == 1) {
             Role role = roles.get().get(0);
             roleRepository.delete(role);
         } else {

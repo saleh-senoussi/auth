@@ -24,7 +24,7 @@ public class PermissionServiceImpl implements PermissionService {
                 .ofNullable(permissionRepository.findByPermissionName(permissionName));
         if (permissions.isEmpty()) {
             Permission permission = new Permission();
-            permission.setPermissionName(permissionName);
+            permission.setPermissionName(permissionName.name());
             permissionRepository.save(permission);
         } else {
             throw new IllegalArgumentException("Permission already exists.");

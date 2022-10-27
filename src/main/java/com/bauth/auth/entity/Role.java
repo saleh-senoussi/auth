@@ -3,6 +3,7 @@ package com.bauth.auth.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,19 +38,20 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(exclude = "users")
 public class Role {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private String id;
+    @Id
+    @Column(name = "role_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
 
-	@NotNull
-	@Column(name = "role_name", unique = true)
-	private UserRole roleName;
+    @NotNull
+    @Column(name = "role_name", unique = true)
+    private String roleName;
 
-	@NotNull
+    @NotNull
     @Column(name = "created_by", updatable = false)
     private String createdBy;
 
-	@NotNull
+    @NotNull
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -57,18 +59,16 @@ public class Role {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-	@ManyToMany(mappedBy = "roles")
-	private List<User> users = new ArrayList<>();
+    @ManyToMany(mappedBy = "userRoles")
+    private Set<User> users;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "role_permission",
-        joinColumns = {@JoinColumn(name = "permission_name") },
-        inverseJoinColumns = { @JoinColumn(name = "role_name") }
-    )
-    private List<Permission> permissions;
+    @JoinTable(name = "role_permission", joinColumns = { @JoinColumn(name = "role_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "permission_id") })
+    @Column(name = "role_permissions")
+    private Set<Permission> rolePermissions;
 
-	@PrePersist
+    @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

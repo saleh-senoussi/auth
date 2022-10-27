@@ -2,6 +2,7 @@ package com.bauth.auth.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,8 +34,9 @@ import lombok.experimental.Accessors;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
     @NotNull
     @Column(name = "username", unique = true)
@@ -87,9 +89,10 @@ public class User {
     private boolean isPasswordExpired = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "role_name") }, inverseJoinColumns = {
-            @JoinColumn(name = "user_id") })
-    private List<Role> roles;
+    @JoinTable(name = "user_role", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "role_id") })
+    @Column(name = "user_roles")
+    private Set<Role> userRoles;
 
     @PrePersist
     public void prePersist() {

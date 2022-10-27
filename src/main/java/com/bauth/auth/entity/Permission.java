@@ -3,6 +3,7 @@ package com.bauth.auth.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,21 +35,22 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(exclude = "roles")
 public class Permission {
     @Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private String id;
+    @Column(name = "permission_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private long id;
 
-	@NotNull
-	@Column(name = "permission_name")
-	private UserPermission permissionName;
+    @NotNull
+    @Column(name = "permission_name", unique = true)
+    private String permissionName;
 
-	@ManyToMany(mappedBy = "permissions")
-	private List<Role> roles = new ArrayList<>();
+    @ManyToMany(mappedBy = "rolePermissions")
+    private Set<Role> roles;
 
-	@NotNull
+    @NotNull
     @Column(name = "created_by", updatable = false)
     private String createdBy;
 
-	@NotNull
+    @NotNull
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -56,10 +58,7 @@ public class Permission {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-	@ManyToMany(mappedBy = "roles")
-	private List<User> users = new ArrayList<>();
-
-	@PrePersist
+    @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();

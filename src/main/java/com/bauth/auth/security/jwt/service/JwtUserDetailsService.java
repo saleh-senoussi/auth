@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.bauth.auth.entity.Role;
@@ -47,8 +48,8 @@ public class JwtUserDetailsService implements UserDetailsService {
 		}
 	}
 
-	private List<GrantedAuthority> mapToGrantedAuthorities(List<Role> roleForUsers) {
-		return roleForUsers.stream().map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
+	private List<GrantedAuthority> mapToGrantedAuthorities(Set<Role> set) {
+		return set.stream().map(role -> new SimpleGrantedAuthority(role.getRoleName()/* .name() */))
 				.collect(Collectors.toList());
 	}
 
@@ -56,7 +57,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 		return new UserDetails() {
 			@Override
 			public Collection<? extends GrantedAuthority> getAuthorities() {
-				return mapToGrantedAuthorities(user.getRoles());
+				return mapToGrantedAuthorities(user.getUserRoles());
 			}
 
 			@Override
